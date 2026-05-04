@@ -42,6 +42,10 @@ export class Game {
     return result;
   }
 
+  getCandidates(row, col) {
+    return this._currentSudoku.getCandidates(row, col);
+  }
+
   // 撤销
   undo() {
     if (!this.canUndo()) return;

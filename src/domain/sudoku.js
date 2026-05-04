@@ -221,4 +221,16 @@ export class Sudoku {
     out += '╚═══════╧═══════╧═══════╝';
     return out;
   }
+
+  // 返回某格的候选数
+  getCandidates(row, col) {
+    if (this.isFixed(row, col)) return [];
+    if (this._grid[row][col] !== 0) return [];
+
+    const candidates = [];
+    for (let v = 1; v <= 9; v++) {
+      if (this.isValidMove(row, col, v)) candidates.push(v);
+    }
+    return candidates;
+  }
 }

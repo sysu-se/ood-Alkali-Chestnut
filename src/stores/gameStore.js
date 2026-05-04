@@ -40,6 +40,8 @@ export function createGameStore(initialGrid) {
     notify();
   }
 
+  const candidates = derived(revision, () => (row, col) => game.getCandidates(row, col));
+
   return {
     subscribe: revision.subscribe,
     fixedGrid,
@@ -51,6 +53,7 @@ export function createGameStore(initialGrid) {
     guess,
     undo,
     redo,
-    reset
+    reset,
+    candidates,
   };
 }
