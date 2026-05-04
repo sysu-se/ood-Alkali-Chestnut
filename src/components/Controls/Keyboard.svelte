@@ -19,6 +19,7 @@
 
 	$: isFailedFirstMove = gameStore?.isFailedFirstMove;
 	$: exploring = gameStore?.exploring;
+	// $: failedExploreState = gameStore?.failedExploreState;
 
 	function handleKeyButton(num) {
 		if (!keyboardDisabled) {
@@ -35,7 +36,11 @@
 				}
 
 				if (num !== 0 && $exploring && isFailedFirstMove?.({ row: $cursor.y, col: $cursor.x, value: num })) {
-					alert('这个候选值已在之前的探索中失败过');
+					const keep = confirm('探索路径已失败，是否继续探索？\n选择“取消”将退出探索。');
+					if (!keep) {
+						gameStore.cancelExplore?.();
+						return;
+					}
 				}
 				gameStore.guess({ row: $cursor.y, col: $cursor.x, value: num });
 			}
