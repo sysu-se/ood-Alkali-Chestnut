@@ -1,11 +1,16 @@
 <script>
 	import { BOX_SIZE } from '@sudoku/constants';
 	import { gamePaused } from '@sudoku/stores/game';
-	import { grid, userGrid, invalidCells } from '@sudoku/stores/grid';
+	// import { grid, userGrid, invalidCells } from '@sudoku/stores/grid';
 	import { settings } from '@sudoku/stores/settings';
 	import { cursor } from '@sudoku/stores/cursor';
 	import { candidates } from '@sudoku/stores/candidates';
 	import Cell from './Cell.svelte';
+
+	export let gameStore;
+	$: grid = gameStore?.grid;
+	$: fixedGrid = gameStore?.fixedGrid;
+	$: invalidCells = gameStore?.invalidCells;
 
 	function isSelected(cursorStore, x, y) {
 		return cursorStore.x === x && cursorStore.y === y;
@@ -37,20 +42,23 @@
 
 		<div class="bg-white shadow-2xl rounded-xl overflow-hidden w-full h-full max-w-xl grid" class:bg-gray-200={$gamePaused}>
 
-			{#each $userGrid as row, y}
-				{#each row as value, x}
-					<Cell {value}
-					      cellY={y + 1}
-					      cellX={x + 1}
-					      candidates={$candidates[x + ',' + y]}
-					      disabled={$gamePaused}
-					      selected={isSelected($cursor, x, y)}
-					      userNumber={$grid[y][x] === 0}
-					      sameArea={$settings.highlightCells && !isSelected($cursor, x, y) && isSameArea($cursor, x, y)}
-					      sameNumber={$settings.highlightSame && value && !isSelected($cursor, x, y) && getValueAtCursor($userGrid, $cursor) === value}
-					      conflictingNumber={$settings.highlightConflicting && $grid[y][x] === 0 && $invalidCells.includes(x + ',' + y)} />
+			{#if grid}
+				{#each $grid as row, y}
+					{#each row as value, x}
+					<Cell
+						{value}
+						cellY={y + 1}
+						cellX={x + 1}
+						candidates={$candidates[x + ',' + y]}
+						disabled={$gamePaused}
+						selected={isSelected($cursor, x, y)}
+						userNumber={$fixedGrid[y][x] === 0}
+						sameArea={$settings.highlightCells && !isSelected($cursor, x, y) && isSameArea($cursor, x, y)}
+						sameNumber={$settings.highlightSame && value && !isSelected($cursor, x, y) && getValueAtCursor($grid, $cursor) === value}
+						conflictingNumber={$settings.highlightConflicting && $fixedGrid[y][x] === 0 && $invalidCells.has(x + ',' + y)} />
+					{/each}
 				{/each}
-			{/each}
+			{/if}
 
 		</div>
 
