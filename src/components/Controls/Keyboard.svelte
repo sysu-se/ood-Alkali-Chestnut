@@ -17,6 +17,9 @@
 		$cursor.y === null ||
 		($fixedGrid && $fixedGrid[$cursor.y][$cursor.x] !== 0);
 
+	$: isFailedFirstMove = gameStore?.isFailedFirstMove;
+	$: exploring = gameStore?.exploring;
+
 	function handleKeyButton(num) {
 		if (!keyboardDisabled) {
 			if ($notes) {
@@ -31,6 +34,9 @@
 					candidates.clear($cursor);
 				}
 
+				if (num !== 0 && $exploring && isFailedFirstMove?.({ row: $cursor.y, col: $cursor.x, value: num })) {
+					alert('这个候选值已在之前的探索中失败过');
+				}
 				gameStore.guess({ row: $cursor.y, col: $cursor.x, value: num });
 			}
 		}

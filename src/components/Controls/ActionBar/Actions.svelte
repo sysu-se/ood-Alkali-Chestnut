@@ -19,6 +19,18 @@
 		$grid[$cursor.y][$cursor.x] !== 0;
 	$: gameStoreCandidates = gameStore?.candidates;
 
+	$: exploring = gameStore?.exploring;
+	$: failedExploreState = gameStore?.failedExploreState;
+
+	let _lastFailed = false;
+	$: if ($exploring && $failedExploreState && !_lastFailed) {
+		alert('探索路径已失败');
+		_lastFailed = true;
+	}
+	$: if (!$failedExploreState) {
+		_lastFailed = false;
+	}
+
 	function handleHint() {
 		if (!hintsAvailable) return;
 
@@ -65,6 +77,26 @@
 			<span class="badge" class:badge-primary={hintsAvailable}>{$hints}</span>
 		{/if}
 	</button>
+
+	{#if $exploring}
+		<button class="btn btn-round" disabled={$gamePaused} title="Commit Explore" on:click={() => gameStore.commitExplore()}>
+			<svg class="icon-outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+			</svg>
+		</button>
+
+		<button class="btn btn-round" disabled={$gamePaused} title="Cancel Explore" on:click={() => gameStore.cancelExplore()}>
+			<svg class="icon-outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+		</button>
+	{:else}
+		<button class="btn btn-round" disabled={$gamePaused} title="Enter Explore" on:click={() => gameStore.enterExplore()}>
+			<svg class="icon-outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2" />
+			</svg>
+		</button>
+	{/if}
 
 	<button class="btn btn-round btn-badge" on:click={notes.toggle} title="Notes ({$notes ? 'ON' : 'OFF'})">
 		<svg class="icon-outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

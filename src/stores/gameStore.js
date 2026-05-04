@@ -4,11 +4,11 @@ import { createGame, createSudoku } from '../domain/index.js';
 export function createGameStore(initialGrid) {
   const sudoku = createSudoku(initialGrid);
   const game = createGame({ sudoku });
-
-  const fixedGrid = readable(sudoku.toJSON().fixed);
-
   // 必须是 store 对象
   const revision = writable(0);
+  const fixedGrid = readable(sudoku.toJSON().fixed);
+  const exploring = derived(revision, () => game.isExploring());
+  const failedExploreState = derived(revision, () => game.isFailedExploreState());
 
   // 用于触发 Svelte 自动刷新
   function notify() {
@@ -39,6 +39,12 @@ export function createGameStore(initialGrid) {
     Object.assign(game, createGame({ sudoku: newSudoku }));
     notify();
   }
+  function enterExplore() { game.enterExplore(); notify(); }
+  function commitExplore() { game.commitExplore(); notify(); }
+  function cancelExplore() { game.cancelExplore(); notify(); }
+  function isFailedFirstMove(move) {
+    return game.isFailedFirstMove(move);
+  }
 
   const candidates = derived(revision, () => (row, col) => game.getCandidates(row, col));
 
@@ -55,5 +61,11 @@ export function createGameStore(initialGrid) {
     redo,
     reset,
     candidates,
+    exploring,
+    failedExploreState,
+    enterExplore,
+    commitExplore,
+    cancelExplore,
+    isFailedFirstMove,
   };
 }

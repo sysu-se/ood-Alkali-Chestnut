@@ -54,6 +54,8 @@
 				gameStore.won.subscribe(won => {
 					if (won) modal.show('gameover');
 				});
+
+				
 			},
 			sencode
 		});

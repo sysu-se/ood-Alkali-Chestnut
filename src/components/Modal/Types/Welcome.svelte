@@ -3,6 +3,7 @@
 	import { startNew, startCustom } from '@sudoku/game';
 	import { validateSencode } from '@sudoku/sencode';
 	import { DIFFICULTIES } from '@sudoku/constants';
+	import { resumeGame } from '@sudoku/game';
 
 	export let data = {};
 	export let hideModal;
@@ -19,6 +20,7 @@
 		} else {
 			startNew(difficulty);
 		}
+		resumeGame()
 
 		hideModal();
 	}
