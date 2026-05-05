@@ -19,7 +19,7 @@
 
 	$: isFailedFirstMove = gameStore?.isFailedFirstMove;
 	$: exploring = gameStore?.exploring;
-	// $: failedExploreState = gameStore?.failedExploreState;
+	$: failedExploreState = gameStore?.failedExploreState;
 
 	function handleKeyButton(num) {
 		if (!keyboardDisabled) {
@@ -42,6 +42,17 @@
 						return;
 					}
 				}
+
+				if (num !== 0 && $exploring && $failedExploreState) {
+					const save = confirm('探索已失败，是否保存当前探索结果？\n确定=保存并退出，取消=放弃并退出');
+					if (save) {
+						gameStore.commitExplore?.();
+					} else {
+						gameStore.cancelExplore?.();
+					}
+					return;
+				}
+
 				gameStore.guess({ row: $cursor.y, col: $cursor.x, value: num });
 			}
 		}

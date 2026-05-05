@@ -22,14 +22,14 @@
 	$: exploring = gameStore?.exploring;
 	$: failedExploreState = gameStore?.failedExploreState;
 
-	let _lastFailed = false;
-	$: if ($exploring && $failedExploreState && !_lastFailed) {
-		alert('探索路径已失败');
-		_lastFailed = true;
-	}
-	$: if (!$failedExploreState) {
-		_lastFailed = false;
-	}
+	// let _lastFailed = false;
+	// $: if ($exploring && $failedExploreState && !_lastFailed) {
+	// 	alert('探索路径已失败');
+	// 	_lastFailed = true;
+	// }
+	// $: if (!$failedExploreState) {
+	// 	_lastFailed = false;
+	// }
 
 	function handleHint() {
 		if (!hintsAvailable) return;
